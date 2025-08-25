@@ -55,24 +55,24 @@ export const getListCached = async (
 };
 
 export const getListPaginated = async (
-    listSlug: string,
-    page: number
+  listSlug: string,
+  page: number
 ): Promise<LetterboxdListPage> => {
-    return await getKanpai<LetterboxdListPage>(
-        `${LETTERBOXD_ORIGIN}${listSlug}page/${page}/`,
+  return await getKanpaiLetterboxdListPage(
+    `${LETTERBOXD_ORIGIN}${listSlug}/page/${page}/`,
+    {
+      next: [
+        ".paginate-nextprev .next",
+        "[href]",
+        getFirstMatch(LETTERBOXD_NEXT_PAGE_REGEX),
+      ],
+      posters: [
+        ".poster-list .posteritem",
         {
-            next: [
-                ".paginate-nextprev .next",
-                "[href]",
-                getFirstMatch(LETTERBOXD_NEXT_PAGE_REGEX),
-            ],
-            posters: [
-                ".poster-list .film-poster",
-                {
-                    slug: ["$", "[data-target-link]"],
-                    title: [".image", "[alt]"],
-                },
-            ],
-        }
-    );
+          slug: [".react-component", "[data-item-link]"],
+          title: [".image", "[alt]"],
+        },
+      ],
+    }
+  );
 };
